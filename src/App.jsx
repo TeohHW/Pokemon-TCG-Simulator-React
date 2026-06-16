@@ -7,10 +7,6 @@ const PACK_PREP_DELAY = 900;
 const TEN_PACK_FLIP_DELAY = CARD_FLIP_DELAY / 10;
 const CARD_BACK_IMAGE = 'https://images.pokemontcg.io/unbroken-bond/back.png';
 const REPOSITORY_URL = 'https://github.com/TeohHW/Pokemon-TCG-Simulator-React';
-const POKEBALL_LOGO = new URL(
-  '../pokemon-tcg-data-master/images/Poké_Ball_icon.png',
-  import.meta.url,
-).href;
 
 const randomItem = (items) => items[Math.floor(Math.random() * items.length)];
 
@@ -358,7 +354,7 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="brand-mark">
-          <img src={POKEBALL_LOGO} alt="" aria-hidden="true" />
+          <span className="nes-pokeball brand-pokeball" aria-hidden="true" />
           <h1>Pokémon TCG Simulator</h1>
         </div>
         <a
@@ -416,7 +412,7 @@ function App() {
             <button
               key={key}
               type="button"
-              className={`set-card ${selectedSet === key ? 'is-selected' : ''}`}
+              className={`set-card nes-btn ${selectedSet === key ? 'is-selected is-primary' : ''}`}
               onClick={() => chooseSet(key)}
             >
               {expansion.logo && (
@@ -448,28 +444,28 @@ function App() {
           <button
             onClick={openPack}
             disabled={loading || !selectedSetIsPlayable}
-            className="btn btn-primary"
+            className="btn btn-primary nes-btn is-success"
           >
             {loading ? 'Loading Database...' : 'Open 1 Pack'}
           </button>
           <button
             onClick={openTenPacks}
             disabled={loading || !selectedSetIsPlayable}
-            className="btn btn-secondary btn-ten-pack"
+            className="btn btn-secondary btn-ten-pack nes-btn is-warning"
           >
             Open 10 Packs
           </button>
           <button
             onClick={openGodPack}
             disabled={loading || !selectedSetIsPlayable}
-            className="btn btn-god"
+            className="btn btn-god nes-btn is-primary"
           >
             Open God Pack
           </button>
           <button
             onClick={clearBinder}
             disabled={!Object.keys(collection).length}
-            className="btn btn-danger"
+            className="btn btn-danger nes-btn is-error"
           >
             Clear Binder
           </button>
@@ -545,10 +541,18 @@ function App() {
             <h2 id="clear-dialog-title">Clear Binder?</h2>
             <p>This will remove every card from your binder collection.</p>
             <div className="clear-dialog-actions">
-              <button type="button" onClick={() => setShowClearBinderDialog(false)}>
+              <button
+                type="button"
+                className="nes-btn"
+                onClick={() => setShowClearBinderDialog(false)}
+              >
                 Cancel
               </button>
-              <button type="button" className="btn btn-danger" onClick={confirmClearBinder}>
+              <button
+                type="button"
+                className="btn btn-danger nes-btn is-error"
+                onClick={confirmClearBinder}
+              >
                 Clear Binder
               </button>
             </div>
@@ -574,7 +578,7 @@ function App() {
               </div>
               <button
                 type="button"
-                className="modal-close"
+                className="modal-close nes-btn"
                 onClick={() => setShowPackModal(false)}
                 disabled={isPreparingPack || isAutoRevealing}
               >
@@ -623,6 +627,33 @@ function App() {
                 ))}
               </div>
             )}
+
+            <div className="pack-actions pack-reveal-actions">
+              <button
+                type="button"
+                className="btn btn-primary nes-btn is-success"
+                onClick={openPack}
+                disabled={loading || !selectedSetIsPlayable || isPreparingPack || isAutoRevealing}
+              >
+                Open 1 Pack
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary btn-ten-pack nes-btn is-warning"
+                onClick={openTenPacks}
+                disabled={loading || !selectedSetIsPlayable || isPreparingPack || isAutoRevealing}
+              >
+                Open 10 Packs
+              </button>
+              <button
+                type="button"
+                className="btn btn-god nes-btn is-primary"
+                onClick={openGodPack}
+                disabled={loading || !selectedSetIsPlayable || isPreparingPack || isAutoRevealing}
+              >
+                Open God Pack
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -638,7 +669,7 @@ function App() {
           <div className="card-detail-modal" onClick={(event) => event.stopPropagation()}>
             <button
               type="button"
-              className="modal-close"
+              className="modal-close nes-btn"
               onClick={() => setSelectedCard(null)}
               aria-label="Close card details"
             >

@@ -226,16 +226,32 @@ h2 {
   display: flex;
   gap: 14px;
   align-items: center;
+  min-width: 0;
 }
 
-.brand-mark img {
-  width: clamp(42px, 7vw, 64px);
-  height: clamp(42px, 7vw, 64px);
-  object-fit: contain;
+.brand-pokeball {
+  flex: 0 0 auto;
 }
 
 .brand-mark h1 {
   margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.nes-pokeball {
+  position: relative;
+  display: inline-block;
+  width: clamp(44px, 5vw, 68px);
+  aspect-ratio: 1;
+  border: 5px solid #050505;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, #ffffff 0 12%, #050505 13% 20%, transparent 21%),
+    linear-gradient(#ef233c 0 46%, #050505 47% 55%, #ffffff 56% 100%);
+  box-shadow:
+    4px 4px 0 #9fa1a1,
+    inset -4px -4px 0 rgb(0 0 0 / 14%);
+  image-rendering: pixelated;
 }
 
 .app-header p {
@@ -1266,11 +1282,6 @@ body {
   padding: 18px;
 }
 
-.brand-mark img {
-  image-rendering: auto;
-  filter: drop-shadow(3px 3px 0 rgb(0 0 0 / 22%));
-}
-
 h1,
 h2,
 h3,
@@ -2167,6 +2178,7 @@ button:hover:not(:disabled),
 }
 
 .pack-reveal-modal {
+  position: relative;
   grid-template-rows: auto minmax(0, 1fr);
   height: min(920px, calc(100vh - 28px));
   max-height: calc(100vh - 28px);
@@ -2176,20 +2188,20 @@ button:hover:not(:disabled),
 .pack-reveal-header {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) minmax(260px, 1fr);
+  grid-template-columns: minmax(180px, 1fr) minmax(120px, 1fr) minmax(260px, 1fr);
   align-items: center;
-  height: 58px;
-  min-height: 58px;
+  height: 56px;
+  min-height: 56px;
 }
 
 .pack-set-info {
   display: grid;
   grid-column: 1 / -1;
-  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) minmax(260px, 1fr);
+  grid-template-columns: minmax(180px, 1fr) minmax(120px, 1fr) minmax(260px, 1fr);
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding-right: 104px;
+  padding-right: 128px;
   min-width: 0;
   color: #050505;
 }
@@ -2202,8 +2214,8 @@ button:hover:not(:disabled),
 .pack-set-logo {
   grid-column: 1;
   justify-self: start;
-  max-width: min(320px, 24vw);
-  max-height: 56px;
+  max-width: min(380px, 30vw);
+  max-height: 66px;
 }
 
 .pack-set-info span,
@@ -2222,20 +2234,35 @@ button:hover:not(:disabled),
   white-space: nowrap;
 }
 
+.pack-reveal-header .modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
+
 .pack-grid {
+  --pack-card-width: clamp(
+    164px,
+    min(194px, calc((100vw - 220px) / 5)),
+    194px
+  );
+
   min-height: 0;
   height: 100%;
-  overflow: hidden;
-  grid-template-columns: repeat(5, minmax(112px, 180px));
+  overflow-y: auto;
+  overflow-x: hidden;
+  grid-template-columns: repeat(5, var(--pack-card-width));
   grid-auto-rows: auto;
   gap: clamp(8px, 1.2vw, 18px);
   align-items: center;
-  align-content: center;
+  align-content: start;
   justify-content: center;
+  padding: 14px 8px 82px;
+  scrollbar-color: #212529 #ffffff;
 }
 
 .pack-grid:not(.is-scrollable) .card-container {
-  width: min(100%, 180px);
+  width: var(--pack-card-width);
   justify-self: center;
 }
 
@@ -2243,16 +2270,26 @@ button:hover:not(:disabled),
   height: auto;
   max-height: 100%;
   overflow-y: auto;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 180px));
+  grid-template-columns: repeat(auto-fit, minmax(164px, 194px));
   grid-auto-rows: auto;
   align-content: start;
-  padding: 2px 8px 18px 2px;
+  padding: 2px 8px 82px 2px;
   scrollbar-color: #212529 #ffffff;
 }
 
 .pack-grid.is-scrollable .card-container {
-  width: min(100%, 180px);
+  width: min(100%, 194px);
   justify-self: center;
+}
+
+.pack-reveal-actions {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+  gap: 8px;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .pack-loading-state {
@@ -2270,4 +2307,203 @@ button:hover:not(:disabled),
   .pack-grid {
     grid-template-columns: repeat(5, minmax(64px, 1fr));
   }
+}
+
+/* NES.css button treatment for the explicitly button-like controls. */
+.nes-btn,
+.nes-btn:hover:not(:disabled),
+.nes-btn:active:not(:disabled),
+.nes-btn:focus-visible {
+  position: relative;
+  border: 4px solid #212529;
+  border-image: none;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: 4px 4px 0 #212529;
+  font-family: "Press Start 2P", "Courier New", "Lucida Console", Monaco, ui-monospace, monospace;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-shadow: none;
+  transform: none;
+  transition: none;
+}
+
+.nes-btn::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  pointer-events: none;
+  box-shadow: inset -4px -4px #adafbc;
+}
+
+.nes-btn::before,
+.nes-btn:hover::before,
+.nes-btn.is-selected::before,
+.series-button.nes-btn.is-active::before {
+  content: none;
+  margin-right: 0;
+}
+
+.nes-btn:hover:not(:disabled) {
+  box-shadow: 4px 4px 0 #212529;
+  transform: none;
+}
+
+.button-group .btn-god.nes-btn {
+  margin-left: auto;
+}
+
+.button-group .btn-god.nes-btn:hover:not(:disabled) {
+  margin-left: auto;
+}
+
+.nes-btn:disabled,
+.nes-btn:disabled:hover,
+.nes-btn.is-disabled,
+.nes-btn.is-disabled:hover,
+.nes-btn.is-disabled:focus {
+  color: #212529;
+  cursor: not-allowed;
+  background-color: #d3d3d3;
+  box-shadow:
+    4px 4px 0 #212529,
+    inset -4px -4px #adafbc;
+  opacity: 0.6;
+}
+
+.nes-btn.is-success,
+.nes-btn.is-success:hover:not(:disabled),
+.btn-primary.nes-btn,
+.btn-primary.nes-btn:hover:not(:disabled) {
+  color: #ffffff;
+  background-color: #92cc41;
+}
+
+.nes-btn.is-success::after,
+.btn-primary.nes-btn::after {
+  box-shadow: inset -4px -4px #4aa52e;
+}
+
+.nes-btn.is-warning,
+.nes-btn.is-warning:hover:not(:disabled),
+.btn-ten-pack.nes-btn,
+.btn-ten-pack.nes-btn:hover:not(:disabled) {
+  color: #212529;
+  background-color: #f7d51d;
+}
+
+.nes-btn.is-warning::after,
+.btn-ten-pack.nes-btn::after {
+  box-shadow: inset -4px -4px #e59400;
+}
+
+.nes-btn.is-primary,
+.nes-btn.is-primary:hover:not(:disabled),
+.btn-god.nes-btn,
+.btn-god.nes-btn:hover:not(:disabled),
+.set-card.nes-btn.is-selected,
+.set-card.nes-btn.is-selected:hover:not(:disabled) {
+  color: #ffffff;
+  background-color: #209cee;
+}
+
+.nes-btn.is-primary::after,
+.btn-god.nes-btn::after,
+.set-card.nes-btn.is-selected::after {
+  box-shadow: inset -4px -4px #006bb3;
+}
+
+.nes-btn.is-error,
+.nes-btn.is-error:hover:not(:disabled),
+.btn-danger.nes-btn,
+.btn-danger.nes-btn:hover:not(:disabled) {
+  color: #ffffff;
+  background-color: #e76e55;
+}
+
+.nes-btn.is-error::after,
+.btn-danger.nes-btn::after {
+  box-shadow: inset -4px -4px #8c2022;
+}
+
+.nes-btn:hover:not(:disabled)::after {
+  box-shadow: inset -6px -6px #adafbc;
+}
+
+.nes-btn.is-success:hover:not(:disabled)::after,
+.btn-primary.nes-btn:hover:not(:disabled)::after {
+  box-shadow: inset -6px -6px #4aa52e;
+}
+
+.nes-btn.is-warning:hover:not(:disabled)::after,
+.btn-ten-pack.nes-btn:hover:not(:disabled)::after {
+  box-shadow: inset -6px -6px #e59400;
+}
+
+.nes-btn.is-primary:hover:not(:disabled)::after,
+.btn-god.nes-btn:hover:not(:disabled)::after,
+.set-card.nes-btn.is-selected:hover:not(:disabled)::after {
+  box-shadow: inset -6px -6px #006bb3;
+}
+
+.nes-btn.is-error:hover:not(:disabled)::after,
+.btn-danger.nes-btn:hover:not(:disabled)::after {
+  box-shadow: inset -6px -6px #8c2022;
+}
+
+.set-card.nes-btn {
+  display: grid;
+  width: auto;
+  padding: 14px;
+  color: #212529;
+  background-color: #ffffff;
+  font-family:
+    "Courier New", "Lucida Console", Monaco, ui-monospace, monospace;
+}
+
+.set-card.nes-btn:hover:not(:disabled) {
+  color: #212529;
+  background-color: #e7e7e7;
+}
+
+.modal-close.nes-btn {
+  position: absolute;
+  min-height: 32px;
+  padding: 4px 8px;
+  color: #212529;
+  background-color: #ffffff;
+  font-size: 0.72rem;
+  transform: none;
+}
+
+.modal-close.nes-btn:hover:not(:disabled),
+.modal-close.nes-btn:active:not(:disabled),
+.modal-close.nes-btn:focus-visible {
+  position: absolute;
+  color: #212529;
+  background-color: #e7e7e7;
+  transform: none;
+}
+
+.pack-reveal-header .modal-close.nes-btn,
+.pack-reveal-header .modal-close.nes-btn:hover:not(:disabled),
+.pack-reveal-header .modal-close.nes-btn:active:not(:disabled),
+.pack-reveal-header .modal-close.nes-btn:focus-visible {
+  top: 18px;
+  right: 18px;
+}
+
+.pack-reveal-header .modal-close.nes-btn:hover:not(:disabled) {
+  color: #ffffff;
+  background-color: #e76e55;
+}
+
+.pack-reveal-header .modal-close.nes-btn:hover:not(:disabled)::after {
+  box-shadow: inset -6px -6px #8c2022;
+}
+
+.pack-reveal-actions .nes-btn {
+  min-height: 34px;
+  padding: 5px 10px;
+  font-size: 0.74rem;
 }

@@ -932,6 +932,7 @@ button:disabled {
   border-radius: 8px;
   padding: 10px;
   background: var(--input-bg);
+  cursor: pointer;
   opacity: 0.48;
   transition:
     border-color 160ms ease,
@@ -943,6 +944,11 @@ button:disabled {
   transform: translateY(-4px);
   border-color: var(--accent);
   opacity: 1;
+}
+
+.binder-card:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
 }
 
 .binder-card.is-owned {
@@ -1094,6 +1100,10 @@ button:disabled {
   aspect-ratio: 63 / 88;
   object-fit: cover;
   transform: translateZ(18px);
+}
+
+.card-detail-image-wrap.is-unowned img {
+  filter: grayscale(1);
 }
 
 .card-detail-info {

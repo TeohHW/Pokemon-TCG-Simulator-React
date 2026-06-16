@@ -278,14 +278,32 @@ function App() {
 
   const activeSet = allExpansions?.[selectedSet];
   const selectedSetIsPlayable = hasPlayableCards(activeSet);
-  const activeSetCards = activeSet
-    ? [...activeSet.commons, ...activeSet.uncommons, ...activeSet.rares]
-    : [];
+  const activeSetCards = useMemo(() => {
+    if (!activeSet) return [];
+
+    const uniqueCards = new Map();
+    [...activeSet.commons, ...activeSet.uncommons, ...activeSet.rares].forEach((card) => {
+      if (!uniqueCards.has(card.id)) {
+        uniqueCards.set(card.id, card);
+      }
+    });
+
+    return [...uniqueCards.values()];
+  }, [activeSet]);
   const ownedActiveSetCards = activeSetCards.filter((card) => collection[card.id]);
   const binderProgress = activeSetCards.length
     ? Math.round((ownedActiveSetCards.length / activeSetCards.length) * 100)
     : 0;
   const progressLevel = binderProgress >= 75 ? 'good' : binderProgress >= 35 ? 'mid' : 'low';
+
+  const openBinderCard = (card) => {
+    setSelectedCard({
+      ...card,
+      setId: selectedSet,
+      setName: activeSet?.setName,
+      isOwnedInBinder: Boolean(collection[card.id]),
+    });
+  };
 
   const seriesOptions = useMemo(() => {
     const options = [
@@ -484,6 +502,15 @@ function App() {
               <article
                 key={card.id}
                 className={`binder-card ${ownedCard ? 'is-owned' : ''}`}
+                role="button"
+                tabIndex={0}
+                onClick={() => openBinderCard(card)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openBinderCard(card);
+                  }
+                }}
               >
                 <img
                   src={getCardFaceImage(card)}
@@ -618,7 +645,9 @@ function App() {
               Close
             </button>
             <div
-              className="card-detail-image-wrap"
+              className={`card-detail-image-wrap ${
+                selectedCard.isOwnedInBinder === false ? 'is-unowned' : ''
+              }`}
               onPointerMove={(event) => {
                 const card = event.currentTarget;
                 const rect = card.getBoundingClientRect();

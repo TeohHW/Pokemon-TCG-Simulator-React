@@ -1,4 +1,4 @@
-## Pokémon TCG Simulator
+## Pokédex, TCG Simulator
 
 A browser-based Pokédex & TCG simulator built with React.
 

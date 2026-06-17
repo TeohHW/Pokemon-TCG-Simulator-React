@@ -1,6 +1,6 @@
 ## Pokémon TCG Simulator
 
-A browser-based Pokémon TCG simulator built with React.
+A browser-based Pokédex & TCG simulator built with React.
 
 🔗 Demo : https://pokemon-tcg-simulator-react.vercel.app/
 

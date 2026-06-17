@@ -259,6 +259,26 @@ const getEnglishFlavorText = (species) => {
   return entry?.flavor_text?.replace(/[\f\n\r]/g, ' ') || '';
 };
 
+const cleanPokeApiText = (text = '') => text.replace(/[\f\n\r]/g, ' ');
+
+const getEnglishEntry = (entries = []) =>
+  entries.filter((entry) => entry.language.name === 'en').at(-1);
+
+const getEnglishEffectText = (entries = []) => {
+  const entry = getEnglishEntry(entries);
+  return cleanPokeApiText(entry?.effect || entry?.short_effect || '');
+};
+
+const getEnglishShortEffectText = (entries = []) => {
+  const entry = getEnglishEntry(entries);
+  return cleanPokeApiText(entry?.short_effect || entry?.effect || '');
+};
+
+const getEnglishApiFlavorText = (entries = []) => {
+  const entry = getEnglishEntry(entries);
+  return cleanPokeApiText(entry?.flavor_text || '');
+};
+
 const formatEvolutionRequirement = (details = []) => {
   const detail = details[0];
   if (!detail) return 'Base form';
@@ -536,6 +556,13 @@ const buildGodPack = (expansion, selectedSet) => {
   }));
 };
 
+const hasPlayableCards = (expansion) =>
+  Boolean(
+    expansion?.commons?.length &&
+      expansion?.uncommons?.length &&
+      expansion?.rares?.length,
+  );
+
 function TcgSimulator({ onBack, onOpenPokedex }) {
   const [allExpansions, setAllExpansions] = useState(null);
   const [selectedSet, setSelectedSet] = useState('base1');
@@ -555,13 +582,6 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
   const revealTimersRef = useRef([]);
   const prepTimerRef = useRef(null);
   const revealDelayRef = useRef(CARD_FLIP_DELAY);
-
-  const hasPlayableCards = (expansion) =>
-    Boolean(
-      expansion?.commons?.length &&
-        expansion?.uncommons?.length &&
-        expansion?.rares?.length,
-    );
 
   useEffect(() => {
     document.documentElement.dataset.theme = 'dark';
@@ -1360,6 +1380,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [selectedTcgCard, setSelectedTcgCard] = useState(null);
   const [selectedSpriteSet, setSelectedSpriteSet] = useState(null);
+  const [selectedPokedexDetail, setSelectedPokedexDetail] = useState(null);
   const [selectedMoveGroup, setSelectedMoveGroup] = useState('');
   const [speciesDetails, setSpeciesDetails] = useState(null);
   const [evolutionTree, setEvolutionTree] = useState(null);
@@ -1422,13 +1443,15 @@ function PokedexPage({ onBack, onOpenTcg }) {
         return response.json();
       })
       .then((data) => {
-        const allCards = Object.values(data).flatMap((expansion) =>
-          [...expansion.commons, ...expansion.uncommons, ...expansion.rares].map((card) => ({
-            ...card,
-            setName: expansion.setName,
-            setId: expansion.setId,
-          })),
-        );
+        const allCards = Object.values(data)
+          .filter((expansion) => hasPlayableCards(expansion))
+          .flatMap((expansion) =>
+            [...expansion.commons, ...expansion.uncommons, ...expansion.rares].map((card) => ({
+              ...card,
+              setName: expansion.setName,
+              setId: expansion.setId,
+            })),
+          );
         setTcgCards(allCards);
       })
       .catch((fetchError) => {
@@ -1509,6 +1532,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
         setEvolutionTree(null);
         setTypeWeaknesses([]);
         setMoveDetails({});
+        setSelectedPokedexDetail(null);
         setSearchTerm(data.name);
       })
       .catch((fetchError) => {
@@ -1517,10 +1541,95 @@ function PokedexPage({ onBack, onOpenTcg }) {
         setEvolutionTree(null);
         setTypeWeaknesses([]);
         setMoveDetails({});
+        setSelectedPokedexDetail(null);
         setError(fetchError.message);
       })
       .finally(() => setLoadingPokemon(false));
   }, []);
+
+  const openAbilityDetail = useCallback((ability, isHidden = false) => {
+    setSelectedPokedexDetail({
+      type: 'ability',
+      name: ability.name,
+      isHidden,
+      loading: true,
+      error: '',
+      data: null,
+    });
+
+    fetch(ability.url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Unable to load ability details.');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setSelectedPokedexDetail({
+          type: 'ability',
+          name: ability.name,
+          isHidden,
+          loading: false,
+          error: '',
+          data,
+        });
+      })
+      .catch((fetchError) => {
+        setSelectedPokedexDetail({
+          type: 'ability',
+          name: ability.name,
+          isHidden,
+          loading: false,
+          error: fetchError.message,
+          data: null,
+        });
+      });
+  }, []);
+
+  const openMoveDetail = useCallback((move) => {
+    const cachedMove = moveDetails[move.name];
+
+    setSelectedPokedexDetail({
+      type: 'move',
+      name: move.name,
+      level: move.level,
+      loading: !cachedMove,
+      error: '',
+      data: cachedMove || null,
+    });
+
+    if (cachedMove) {
+      return;
+    }
+
+    fetch(move.url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Unable to load move details.');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setSelectedPokedexDetail({
+          type: 'move',
+          name: move.name,
+          level: move.level,
+          loading: false,
+          error: '',
+          data,
+        });
+      })
+      .catch((fetchError) => {
+        setSelectedPokedexDetail({
+          type: 'move',
+          name: move.name,
+          level: move.level,
+          loading: false,
+          error: fetchError.message,
+          data: null,
+        });
+      });
+  }, [moveDetails]);
 
   const searchRandomPokemon = useCallback(() => {
     setError('');
@@ -1562,6 +1671,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
         setEvolutionTree(null);
         setTypeWeaknesses([]);
         setMoveDetails({});
+        setSelectedPokedexDetail(null);
         setSearchTerm(data.name);
       })
       .catch((fetchError) => {
@@ -1570,6 +1680,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
         setEvolutionTree(null);
         setTypeWeaknesses([]);
         setMoveDetails({});
+        setSelectedPokedexDetail(null);
         setError(fetchError.message);
       })
       .finally(() => setLoadingPokemon(false));
@@ -1688,6 +1799,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
                     setTypeWeaknesses([]);
                     setMoveDetails({});
                     setSelectedSpriteSet(null);
+                    setSelectedPokedexDetail(null);
                     setSelectedMoveGroup('');
                     setLoadingList(true);
                   }}
@@ -1879,10 +1991,15 @@ function PokedexPage({ onBack, onOpenTcg }) {
                   <h3>Abilities</h3>
                   <div className="ability-list">
                     {selectedPokemon.abilities.map(({ ability, is_hidden: isHidden }) => (
-                      <span key={ability.name}>
+                      <button
+                        key={ability.name}
+                        type="button"
+                        className="ability-button"
+                        onClick={() => openAbilityDetail(ability, isHidden)}
+                      >
                         {formatPokemonName(ability.name)}
                         {isHidden ? ' (Hidden)' : ''}
-                      </span>
+                      </button>
                     ))}
                   </div>
                 </section>
@@ -1934,7 +2051,19 @@ function PokedexPage({ onBack, onOpenTcg }) {
                     </thead>
                     <tbody>
                       {levelUpMoves.map((move, index) => (
-                        <tr key={`${move.level}-${move.name}`} className={index % 2 ? 'is-red-row' : ''}>
+                        <tr
+                          key={`${move.level}-${move.name}`}
+                          className={`move-detail-row ${index % 2 ? 'is-red-row' : ''}`}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => openMoveDetail(move)}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              openMoveDetail(move);
+                            }
+                          }}
+                        >
                           {moveDetails[move.name] ? (
                             <>
                               <td>{move.level}</td>
@@ -2117,6 +2246,132 @@ function PokedexPage({ onBack, onOpenTcg }) {
                 </article>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {selectedPokedexDetail && (
+        <div
+          className="pokedex-info-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pokedex-info-title"
+          onClick={() => setSelectedPokedexDetail(null)}
+        >
+          <div className="pokedex-info-modal" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className="modal-close nes-btn"
+              onClick={() => setSelectedPokedexDetail(null)}
+              aria-label="Close Pokedex detail"
+            >
+              Close
+            </button>
+            <div>
+              <p className="card-detail-set">
+                {selectedPokedexDetail.type === 'ability' ? 'Ability' : 'Move'}
+              </p>
+              <h2 id="pokedex-info-title">{formatPokemonName(selectedPokedexDetail.name)}</h2>
+            </div>
+
+            {selectedPokedexDetail.loading && (
+              <p className="pokedex-status">Loading details...</p>
+            )}
+            {!selectedPokedexDetail.loading && selectedPokedexDetail.error && (
+              <p className="pokedex-status">{selectedPokedexDetail.error}</p>
+            )}
+            {!selectedPokedexDetail.loading && selectedPokedexDetail.data && (
+              <>
+                {selectedPokedexDetail.type === 'ability' && (
+                  <>
+                    <dl className="pokedex-info-meta">
+                      <div>
+                        <dt>Slot</dt>
+                        <dd>{selectedPokedexDetail.isHidden ? 'Hidden Ability' : 'Standard Ability'}</dd>
+                      </div>
+                      <div>
+                        <dt>Introduced</dt>
+                        <dd>{formatGenerationName(selectedPokedexDetail.data.generation?.name) || 'Unknown'}</dd>
+                      </div>
+                    </dl>
+                    <section className="detail-section">
+                      <h3>Effect</h3>
+                      <p>
+                        {getEnglishEffectText(selectedPokedexDetail.data.effect_entries) ||
+                          'No English effect text found.'}
+                      </p>
+                    </section>
+                    <section className="detail-section">
+                      <h3>Game Description</h3>
+                      <p>
+                        {getEnglishApiFlavorText(selectedPokedexDetail.data.flavor_text_entries) ||
+                          'No English game description found.'}
+                      </p>
+                    </section>
+                  </>
+                )}
+
+                {selectedPokedexDetail.type === 'move' && (
+                  <>
+                    <dl className="pokedex-info-meta">
+                      <div>
+                        <dt>Level</dt>
+                        <dd>{selectedPokedexDetail.level}</dd>
+                      </div>
+                      <div>
+                        <dt>Type</dt>
+                        <dd>
+                          <span className={`move-type-pill type-${selectedPokedexDetail.data.type.name}`}>
+                            {formatPokemonName(selectedPokedexDetail.data.type.name)}
+                          </span>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Category</dt>
+                        <dd>
+                          <img
+                            className="move-category-icon"
+                            src={MOVE_CATEGORY_ICONS[selectedPokedexDetail.data.damage_class.name]}
+                            alt={formatPokemonName(selectedPokedexDetail.data.damage_class.name)}
+                          />
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Power</dt>
+                        <dd>{selectedPokedexDetail.data.power ?? '-'}</dd>
+                      </div>
+                      <div>
+                        <dt>Accuracy</dt>
+                        <dd>{selectedPokedexDetail.data.accuracy ?? '-'}</dd>
+                      </div>
+                      <div>
+                        <dt>PP</dt>
+                        <dd>{selectedPokedexDetail.data.pp ?? '-'}</dd>
+                      </div>
+                      <div>
+                        <dt>Introduced</dt>
+                        <dd>{formatGenerationName(selectedPokedexDetail.data.generation?.name) || 'Unknown'}</dd>
+                      </div>
+                    </dl>
+                    <section className="detail-section">
+                      <h3>Effect</h3>
+                      <p>
+                        {getEnglishEffectText(selectedPokedexDetail.data.effect_entries) ||
+                          getEnglishShortEffectText(selectedPokedexDetail.data.effect_entries) ||
+                          'No English effect text found.'}
+                      </p>
+                    </section>
+                    <section className="detail-section">
+                      <h3>Game Description</h3>
+                      <p>
+                        {getEnglishApiFlavorText(selectedPokedexDetail.data.flavor_text_entries) ||
+                          'No English game description found.'}
+                      </p>
+                    </section>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}

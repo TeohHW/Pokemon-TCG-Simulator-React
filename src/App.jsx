@@ -47,6 +47,7 @@ import platform3ds from '../pokedex/platform/3DS.png';
 import platformDs from '../pokedex/platform/DS.png';
 import platformGameBoyAdvance from '../pokedex/platform/GameBoyAdvance.png';
 import platformSwitch from '../pokedex/platform/Switch.png';
+import speakerIcon from '../pokedex/misc/Speaker_Icon.svg';
 
 const COLLECTION_STORAGE_KEY = 'pokemon-pack-simulator-collection';
 const CARD_FLIP_DELAY = 200;
@@ -625,6 +626,7 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
   const [binderSearchTerm, setBinderSearchTerm] = useState('');
   const [sortMode, setSortMode] = useState('release-oldest');
   const [currentPack, setCurrentPack] = useState([]);
+  const [currentPackSet, setCurrentPackSet] = useState(null);
   const [showPackModal, setShowPackModal] = useState(false);
   const [packAdded, setPackAdded] = useState(false);
   const [isPreparingPack, setIsPreparingPack] = useState(false);
@@ -636,10 +638,6 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
   const revealTimersRef = useRef([]);
   const prepTimerRef = useRef(null);
   const revealDelayRef = useRef(CARD_FLIP_DELAY);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = 'dark';
-  }, []);
 
   useEffect(
     () => () => {
@@ -727,14 +725,24 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
 
   const startPackReveal = (cards, revealDelay = CARD_FLIP_DELAY) => {
     clearRevealTimers();
-    setCurrentPack(cards);
+    const annotatedCards = cards.map((card) => ({
+      ...card,
+      isNewPull: !collection[card.id],
+    }));
+    setCurrentPack(annotatedCards);
+    setCurrentPackSet({
+      setId: annotatedCards[0]?.setId || selectedSet,
+      setName: annotatedCards[0]?.setName || allExpansions?.[selectedSet]?.setName,
+      logo: allExpansions?.[annotatedCards[0]?.setId || selectedSet]?.logo,
+      releaseYear: allExpansions?.[annotatedCards[0]?.setId || selectedSet]?.releaseYear,
+    });
     setShowPackModal(true);
     setPackAdded(false);
     setIsPreparingPack(false);
     setIsAutoRevealing(false);
     setSelectedCard(null);
     revealDelayRef.current = revealDelay;
-    revealCards(cards, revealDelay);
+    revealCards(annotatedCards, revealDelay);
   };
 
   const openPack = () => {
@@ -747,6 +755,22 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
     }
 
     startPackReveal(buildBoosterPack(activeSet, selectedSet));
+  };
+
+  const openRandomPack = () => {
+    if (loading || !allExpansions) return;
+
+    const playableSets = Object.entries(allExpansions).filter(([, expansion]) =>
+      hasPlayableCards(expansion),
+    );
+    const [randomSetId, randomSet] = randomItem(playableSets) || [];
+
+    if (!randomSetId || !randomSet) {
+      alert('No playable sets are available locally yet!');
+      return;
+    }
+
+    startPackReveal(buildBoosterPack(randomSet, randomSetId));
   };
 
   const openTenPacks = () => {
@@ -896,10 +920,10 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
   return (
     <div className="app-container">
       <header className="app-header">
-        <div className="brand-mark">
+        <button type="button" className="brand-mark brand-home-button" onClick={onBack}>
           <span className="nes-pokeball brand-pokeball" aria-hidden="true" />
           <h1>Pokémon TCG Simulator</h1>
-        </div>
+        </button>
         <div className="header-actions">
           <button type="button" className="nes-btn nav-button" onClick={onBack}>
             Home
@@ -1005,6 +1029,13 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
             className="btn btn-secondary btn-ten-pack nes-btn is-warning"
           >
             Open 10 Packs
+          </button>
+          <button
+            onClick={openRandomPack}
+            disabled={loading || !allExpansions}
+            className="btn btn-random-pack nes-btn is-primary"
+          >
+            Open Random Pack
           </button>
           <button
             onClick={openGodPack}
@@ -1127,15 +1158,15 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
           <div className="pack-reveal-modal">
             <div className="pack-reveal-header">
               <div className="pack-set-info">
-                {activeSet?.logo && (
+                {currentPackSet?.logo && (
                   <img
                     className="pack-set-logo"
-                    src={activeSet.logo}
-                    alt={`${activeSet.setName} logo`}
+                    src={currentPackSet.logo}
+                    alt={`${currentPackSet.setName} logo`}
                   />
                 )}
                 <span className="pack-release-year">
-                  Release Year: {activeSet?.releaseYear || 'Unknown year'}
+                  Release Year: {currentPackSet?.releaseYear || 'Unknown year'}
                 </span>
               </div>
               <button
@@ -1176,6 +1207,7 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
                           onError={handleCardImageError}
                         />
                         {card.isRare && <div className="holo-overlay" aria-hidden="true" />}
+                        {card.isNewPull && <span className="new-card-badge">New</span>}
                       </div>
                       <div className="card-back">
                         <img
@@ -1206,6 +1238,14 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
                 disabled={loading || !selectedSetIsPlayable || isPreparingPack || isAutoRevealing}
               >
                 Open 10 Packs
+              </button>
+              <button
+                type="button"
+                className="btn btn-random-pack nes-btn is-primary"
+                onClick={openRandomPack}
+                disabled={loading || !allExpansions || isPreparingPack || isAutoRevealing}
+              >
+                Random Pack
               </button>
               <button
                 type="button"
@@ -1339,10 +1379,6 @@ function TcgSimulator({ onBack, onOpenPokedex }) {
 }
 
 function HomePage({ onChoose }) {
-  useEffect(() => {
-    document.documentElement.dataset.theme = 'dark';
-  }, []);
-
   return (
     <main className="home-screen">
       <div className="home-repo-link">
@@ -1461,10 +1497,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
   const [loadingList, setLoadingList] = useState(true);
   const [loadingPokemon, setLoadingPokemon] = useState(false);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = 'dark';
-  }, []);
+  const cryAudioRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -1580,6 +1613,16 @@ function PokedexPage({ onBack, onOpenTcg }) {
     return () => controller.abort();
   }, [selectedPokemon]);
 
+  useEffect(
+    () => () => {
+      if (cryAudioRef.current) {
+        cryAudioRef.current.pause();
+        cryAudioRef.current = null;
+      }
+    },
+    [selectedPokemon],
+  );
+
   const searchPokemon = useCallback((pokemonName) => {
     const normalizedName = normalizePokemonLookup(pokemonName);
     if (!normalizedName) return;
@@ -1609,6 +1652,22 @@ function PokedexPage({ onBack, onOpenTcg }) {
       })
       .finally(() => setLoadingPokemon(false));
   }, []);
+
+  const playPokemonCry = useCallback(() => {
+    const cryUrl = selectedPokemon?.cries?.latest || selectedPokemon?.cries?.legacy;
+    if (!cryUrl) return;
+
+    if (cryAudioRef.current) {
+      cryAudioRef.current.pause();
+      cryAudioRef.current.currentTime = 0;
+    }
+
+    const audio = new Audio(cryUrl);
+    cryAudioRef.current = audio;
+    audio.play().catch(() => {
+      setError('Pokemon cry could not be played.');
+    });
+  }, [selectedPokemon]);
 
   const openAbilityDetail = useCallback((ability, isHidden = false) => {
     setSelectedPokedexDetail({
@@ -1817,14 +1876,20 @@ function PokedexPage({ onBack, onOpenTcg }) {
     () => getFeaturedTcgCards(tcgCards, [selectedPokemon?.name, selectedPokemon?.species?.name]),
     [tcgCards, selectedPokemon],
   );
+  const getStarterName = useCallback(
+    (starterId) =>
+      pokemonList.find((pokemon) => pokemon.pokemonId === String(starterId))?.name ||
+      `Pokemon ${starterId}`,
+    [pokemonList],
+  );
 
   return (
     <div className="app-container pokedex-page">
       <header className="app-header">
-        <div className="brand-mark">
+        <button type="button" className="brand-mark brand-home-button" onClick={onBack}>
           <span className="nes-pokeball brand-pokeball" aria-hidden="true" />
           <h1>Pokedex</h1>
-        </div>
+        </button>
         <div className="header-actions">
           <button type="button" className="nes-btn nav-button" onClick={onBack}>
             Home
@@ -1993,7 +2058,18 @@ function PokedexPage({ onBack, onOpenTcg }) {
               </div>
               <div className="pokedex-card-info">
                 <p className="card-detail-set">#{String(selectedPokemon.id).padStart(3, '0')}</p>
-                <h2>{formatPokemonName(selectedPokemon.name)}</h2>
+                <div className="pokemon-title-row">
+                  <h2>{formatPokemonName(selectedPokemon.name)}</h2>
+                  <button
+                    type="button"
+                    className="cry-button"
+                    onClick={playPokemonCry}
+                    disabled={!selectedPokemon.cries?.latest && !selectedPokemon.cries?.legacy}
+                    aria-label={`Play ${formatPokemonName(selectedPokemon.name)} cry`}
+                  >
+                    <img src={speakerIcon} alt="" aria-hidden="true" />
+                  </button>
+                </div>
                 <div className="type-row">
                   {selectedPokemon.types.map(({ type }) => (
                     <span key={type.name} className={`type-badge type-${type.name}`}>
@@ -2244,12 +2320,10 @@ function PokedexPage({ onBack, onOpenTcg }) {
                           >
                             <img
                               src={getPokemonOfficialArtworkUrl(starterId)}
-                              alt={`Open ${formatPokemonName(
-                                pokemonList.find((pokemon) => pokemon.pokemonId === String(starterId))?.name ||
-                                  `Pokemon ${starterId}`,
-                              )}`}
+                              alt={`Open ${formatPokemonName(getStarterName(starterId))}`}
                               loading="lazy"
                             />
+                            <strong>{formatPokemonName(getStarterName(starterId))}</strong>
                           </span>
                         ))}
                       </div>

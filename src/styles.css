@@ -2777,6 +2777,7 @@ button:active:not(:disabled) {
 }
 
 .evolution-section,
+.alternate-forms-section,
 .moves-section {
   grid-column: 1 / -1;
 }
@@ -2828,6 +2829,14 @@ button:active:not(:disabled) {
     inset -4px -4px 0 #adafbc,
     inset 4px 4px 0 #ffffff;
   text-align: center;
+  cursor: pointer;
+}
+
+.evolution-node:hover,
+.evolution-node:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+  background: var(--pokedex-red-soft);
 }
 
 .evolution-node img {
@@ -2842,6 +2851,55 @@ button:active:not(:disabled) {
   font-size: 0.82rem;
   font-weight: 900;
   line-height: 1.25;
+}
+
+.alternate-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.alternate-form-card {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  width: 100%;
+  min-height: 190px;
+  border: 4px solid #212529;
+  border-radius: 0;
+  padding: 14px;
+  color: #050505;
+  background: #ffffff;
+  box-shadow:
+    inset -4px -4px 0 #adafbc,
+    inset 4px 4px 0 #ffffff;
+  text-align: center;
+}
+
+.alternate-form-card:hover:not(:disabled),
+.alternate-form-card:focus-visible,
+.alternate-form-card.is-current {
+  color: #050505;
+  background: var(--pokedex-red-soft);
+  transform: none;
+}
+
+.alternate-form-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.alternate-form-card strong,
+.alternate-form-card span {
+  font-size: 0.82rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.alternate-form-card span {
+  color: #555555;
+  font-weight: 900;
 }
 
 .generation-sprite-grid {
@@ -3005,6 +3063,11 @@ button:active:not(:disabled) {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 22px;
   max-height: 780px;
+}
+
+.tcg-featured-grid {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
+  justify-content: start;
 }
 
 .binder-card,

@@ -246,8 +246,58 @@ const getPokemonOfficialArtworkUrl = (pokemonId) =>
     ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`
     : '';
 
+const normalizePokemonLookup = (pokemonName = '') =>
+  String(pokemonName)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const fetchPokemonByNameOrSpecies = (pokemonName, options = {}) => {
+  const normalizedName = normalizePokemonLookup(pokemonName);
+  if (!normalizedName) {
+    return Promise.reject(new Error('Pokemon not found. Try a name or National Dex number.'));
+  }
+
+  return fetch(`${POKEAPI_BASE_URL}/pokemon/${normalizedName}`, options)
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+
+      return fetch(`${POKEAPI_BASE_URL}/pokemon-species/${normalizedName}`, options)
+        .then((speciesResponse) => {
+          if (!speciesResponse.ok) {
+            throw new Error('Pokemon not found. Try a name or National Dex number.');
+          }
+          return speciesResponse.json();
+        })
+        .then((species) => {
+          const defaultVariety =
+            species.varieties?.find((variety) => variety.is_default) ||
+            species.varieties?.[0];
+
+          if (!defaultVariety?.pokemon?.url) {
+            throw new Error('Pokemon species found, but no default form is available.');
+          }
+
+          return fetch(defaultVariety.pokemon.url, options).then((pokemonResponse) => {
+            if (!pokemonResponse.ok) {
+              throw new Error('Pokemon form could not be loaded.');
+            }
+            return pokemonResponse.json();
+          });
+        });
+    });
+};
+
 const getPokemonIdFromSpeciesUrl = (url = '') => {
   const [, id] = url.match(/\/pokemon-species\/(\d+)\//) || [];
+  return id || '';
+};
+
+const getPokemonIdFromPokemonUrl = (url = '') => {
+  const [, id] = url.match(/\/pokemon\/(\d+)\//) || [];
   return id || '';
 };
 
@@ -473,20 +523,24 @@ const getGenerationSprites = (pokemon) => {
   );
 };
 
-const getFeaturedTcgCards = (cards, pokemonName) => {
-  const normalizedPokemon = normalizePokemonName(pokemonName);
-  if (!normalizedPokemon) return [];
+const getFeaturedTcgCards = (cards, pokemonNames) => {
+  const normalizedPokemonNames = [...new Set([pokemonNames].flat())]
+    .map((pokemonName) => normalizePokemonName(pokemonName))
+    .filter(Boolean);
+
+  if (!normalizedPokemonNames.length) return [];
 
   return cards.filter((card) => {
     const normalizedCardName = normalizePokemonName(card.name);
     const cardTokens = normalizedCardName.split(' ');
-    return (
+
+    return normalizedPokemonNames.some((normalizedPokemon) => (
       normalizedCardName === normalizedPokemon ||
       normalizedCardName.includes(` ${normalizedPokemon} `) ||
       normalizedCardName.startsWith(`${normalizedPokemon} `) ||
       normalizedCardName.endsWith(` ${normalizedPokemon}`) ||
       cardTokens.includes(normalizedPokemon)
-    );
+    ));
   });
 };
 
@@ -1353,12 +1407,23 @@ function GitHubRepoLink() {
   );
 }
 
-function EvolutionBranch({ node }) {
+function EvolutionBranch({ node, onChoosePokemon }) {
   if (!node) return null;
 
   return (
     <div className="evolution-branch">
-      <article className="evolution-node">
+      <article
+        className="evolution-node"
+        role="button"
+        tabIndex={0}
+        onClick={() => onChoosePokemon(node.name)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onChoosePokemon(node.name);
+          }
+        }}
+      >
         <img src={getPokemonSpriteUrl(node.id)} alt={formatPokemonName(node.name)} loading="lazy" />
         <strong>{formatPokemonName(node.name)}</strong>
         <span>{node.requirement}</span>
@@ -1366,7 +1431,11 @@ function EvolutionBranch({ node }) {
       {node.children.length > 0 && (
         <div className="evolution-children">
           {node.children.map((child) => (
-            <EvolutionBranch key={`${child.id}-${child.name}`} node={child} />
+            <EvolutionBranch
+              key={`${child.id}-${child.name}`}
+              node={child}
+              onChoosePokemon={onChoosePokemon}
+            />
           ))}
         </div>
       )}
@@ -1512,19 +1581,13 @@ function PokedexPage({ onBack, onOpenTcg }) {
   }, [selectedPokemon]);
 
   const searchPokemon = useCallback((pokemonName) => {
-    const normalizedName = pokemonName.trim().toLowerCase();
+    const normalizedName = normalizePokemonLookup(pokemonName);
     if (!normalizedName) return;
 
     setLoadingPokemon(true);
     setError('');
 
-    fetch(`${POKEAPI_BASE_URL}/pokemon/${normalizedName}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Pokemon not found. Try a name or National Dex number.');
-        }
-        return response.json();
-      })
+    fetchPokemonByNameOrSpecies(normalizedName)
       .then((data) => {
         setSelectedPokemon(data);
         setSelectedMoveGroup('');
@@ -1533,7 +1596,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
         setTypeWeaknesses([]);
         setMoveDetails({});
         setSelectedPokedexDetail(null);
-        setSearchTerm(data.name);
+        setSearchTerm(data.species?.name || data.name);
       })
       .catch((fetchError) => {
         setSelectedPokemon(null);
@@ -1656,13 +1719,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
         if (!randomPokemon) {
           throw new Error('No Pokemon available to randomize.');
         }
-        return fetch(`${POKEAPI_BASE_URL}/pokemon/${randomPokemon.name}`);
-      })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Random Pokemon could not be loaded.');
-        }
-        return response.json();
+        return fetchPokemonByNameOrSpecies(randomPokemon.name);
       })
       .then((data) => {
         setSelectedPokemon(data);
@@ -1672,7 +1729,7 @@ function PokedexPage({ onBack, onOpenTcg }) {
         setTypeWeaknesses([]);
         setMoveDetails({});
         setSelectedPokedexDetail(null);
-        setSearchTerm(data.name);
+        setSearchTerm(data.species?.name || data.name);
       })
       .catch((fetchError) => {
         setSelectedPokemon(null);
@@ -1747,8 +1804,17 @@ function PokedexPage({ onBack, onOpenTcg }) {
     () => getGenerationSprites(selectedPokemon),
     [selectedPokemon],
   );
+  const alternateForms = useMemo(
+    () =>
+      (speciesDetails?.varieties || []).map((variety) => ({
+        name: variety.pokemon.name,
+        isDefault: variety.is_default,
+        pokemonId: getPokemonIdFromPokemonUrl(variety.pokemon.url),
+      })),
+    [speciesDetails],
+  );
   const featuredCards = useMemo(
-    () => getFeaturedTcgCards(tcgCards, selectedPokemon?.name),
+    () => getFeaturedTcgCards(tcgCards, [selectedPokemon?.name, selectedPokemon?.species?.name]),
     [tcgCards, selectedPokemon],
   );
 
@@ -2009,12 +2075,42 @@ function PokedexPage({ onBack, onOpenTcg }) {
                 <h3>Evolution Tree</h3>
                 <div className="evolution-tree">
                   {evolutionTree ? (
-                    <EvolutionBranch node={evolutionTree} />
+                    <EvolutionBranch node={evolutionTree} onChoosePokemon={searchPokemon} />
                   ) : (
                     <p className="pokedex-status">Loading evolution tree...</p>
                   )}
                 </div>
               </section>
+
+              {alternateForms.length > 1 && (
+                <section className="pokedex-section alternate-forms-section">
+                  <h3>Alternate Forms</h3>
+                  <div className="alternate-form-grid">
+                    {alternateForms.map((form) => (
+                      <button
+                        key={form.name}
+                        type="button"
+                        className={`alternate-form-card ${
+                          selectedPokemon.name === form.name ? 'is-current' : ''
+                        }`}
+                        onClick={() => searchPokemon(form.name)}
+                      >
+                        <img
+                          src={getPokemonOfficialArtworkUrl(form.pokemonId)}
+                          alt=""
+                          loading="lazy"
+                          aria-hidden="true"
+                          onError={(event) => {
+                            event.currentTarget.src = getPokemonSpriteUrl(form.pokemonId);
+                          }}
+                        />
+                        <strong>{formatPokemonName(form.name)}</strong>
+                        {form.isDefault && <span>Default Form</span>}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               <section className="pokedex-section moves-section">
                 <h3>

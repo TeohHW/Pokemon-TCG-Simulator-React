@@ -248,9 +248,7 @@ h2 {
   padding: 18px;
   background: #f4f4f4;
   background-clip: padding-box;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
   image-rendering: pixelated;
 }
 
@@ -342,9 +340,7 @@ button.brand-home-button:focus-visible {
   padding: 18px;
   background: #f4f4f4;
   background-clip: padding-box;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
   image-rendering: pixelated;
   margin-bottom: 28px;
 }
@@ -918,9 +914,7 @@ button.brand-home-button:focus-visible {
   padding: 18px;
   background: #f4f4f4;
   background-clip: padding-box;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
   image-rendering: pixelated;
 }
 
@@ -1439,9 +1433,7 @@ button.brand-home-button:focus-visible {
   border-image: var(--gb-frame) var(--gb-frame-slice) round;
   background: #ffffff;
   background-clip: padding-box;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
   image-rendering: pixelated;
 }
 
@@ -1539,9 +1531,7 @@ button.brand-home-button:focus-visible {
   border-image: var(--gb-frame) var(--gb-frame-slice) round;
   padding: 22px;
   background: #ffffff;
-  box-shadow:
-    6px 6px 0 rgb(0 0 0 / 36%),
-    inset 4px 4px 0 #ffffff;
+  box-shadow: inset 4px 4px 0 #ffffff;
   image-rendering: pixelated;
 }
 
@@ -1615,9 +1605,7 @@ button.brand-home-button:focus-visible {
   padding: 18px 22px;
   color: #050505;
   background: #ffffff;
-  box-shadow:
-    6px 6px 0 rgb(0 0 0 / 36%),
-    inset 4px 4px 0 #ffffff;
+  box-shadow: inset 4px 4px 0 #ffffff;
   image-rendering: pixelated;
 }
 
@@ -2375,9 +2363,7 @@ button.brand-home-button:focus-visible {
   border-image: var(--gb-frame) var(--gb-frame-slice) round;
   padding: 22px;
   background: #ffffff;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
   image-rendering: pixelated;
 }
 
@@ -2607,9 +2593,7 @@ button.brand-home-button:focus-visible {
   background:
     linear-gradient(#fff8d8, #ffffff 260px),
     #ffffff;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
   image-rendering: pixelated;
 }
 
@@ -2723,9 +2707,7 @@ button.brand-home-button:focus-visible {
   border-image: var(--gb-frame) var(--gb-frame-slice) round;
   background: #ffffff;
   background-clip: padding-box;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
   image-rendering: pixelated;
 }
 
@@ -2862,9 +2844,7 @@ button.brand-home-button:focus-visible {
   border: var(--gb-frame-width) solid transparent;
   border-image: var(--gb-frame) var(--gb-frame-slice) round;
   padding: 0;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
 }
 
 .who-bg-image {
@@ -3189,9 +3169,7 @@ button.who-pokemon-button:focus-visible:not(:disabled) {
   background:
     linear-gradient(#fff8d8, #ffffff 260px),
     #ffffff;
-  box-shadow:
-    8px 8px 0 rgb(0 0 0 / 44%),
-    inset 0 0 0 4px #ffffff;
+  box-shadow: inset 0 0 0 4px #ffffff;
   image-rendering: pixelated;
 }
 
@@ -3288,7 +3266,6 @@ button.who-pokemon-button:focus-visible:not(:disabled) {
   padding: 34px 38px;
   color: #050505;
   background: #ffffff;
-  box-shadow: 10px 10px 0 rgb(0 0 0 / 34%);
 }
 
 .clear-dialog::before,

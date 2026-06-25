@@ -1466,6 +1466,7 @@ function WhosThatPokemonPage({ onBack, onOpenPokedex, onOpenTcg }) {
   const [entryLoading, setEntryLoading] = useState(false);
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [showResetLeaderboardDialog, setShowResetLeaderboardDialog] = useState(false);
+  const [pendingLeaveAction, setPendingLeaveAction] = useState(null);
   const [error, setError] = useState('');
   const sessionIdRef = useRef('');
   const guessInputRef = useRef(null);
@@ -1776,6 +1777,24 @@ function WhosThatPokemonPage({ onBack, onOpenPokedex, onOpenTcg }) {
     setShowResetLeaderboardDialog(false);
   };
 
+  const requestLeaveGame = (navigationAction) => {
+    setShowGameMenu(false);
+    setShowEntryOverlay(false);
+    setShowResetLeaderboardDialog(false);
+    setSelectedTcgCard(null);
+    setPendingLeaveAction(() => navigationAction);
+  };
+
+  const cancelLeaveGame = () => {
+    setPendingLeaveAction(null);
+  };
+
+  const confirmLeaveGame = () => {
+    const navigationAction = pendingLeaveAction;
+    setPendingLeaveAction(null);
+    navigationAction?.();
+  };
+
   const openEntryOverlay = () => {
     setEntrySpecies(null);
     setEntryLoading(true);
@@ -1984,18 +2003,34 @@ function WhosThatPokemonPage({ onBack, onOpenPokedex, onOpenTcg }) {
   return (
     <div className="app-container who-page who-game-route">
       <header className="app-header who-game-header">
-        <button type="button" className="brand-mark brand-home-button" onClick={onBack}>
+        <button
+          type="button"
+          className="brand-mark brand-home-button"
+          onClick={() => requestLeaveGame(onBack)}
+        >
           <span className="nes-pokeball brand-pokeball" aria-hidden="true" />
           <h1>Who's That Pokemon?</h1>
         </button>
         <div className="header-actions">
-          <button type="button" className="nes-btn nav-button" onClick={onBack}>
+          <button
+            type="button"
+            className="nes-btn nav-button"
+            onClick={() => requestLeaveGame(onBack)}
+          >
             Home
           </button>
-          <button type="button" className="nes-btn nav-button" onClick={onOpenPokedex}>
+          <button
+            type="button"
+            className="nes-btn nav-button"
+            onClick={() => requestLeaveGame(onOpenPokedex)}
+          >
             Pokedex
           </button>
-          <button type="button" className="nes-btn nav-button" onClick={onOpenTcg}>
+          <button
+            type="button"
+            className="nes-btn nav-button"
+            onClick={() => requestLeaveGame(onOpenTcg)}
+          >
             TCG
           </button>
           <GitHubRepoLink />
@@ -2249,6 +2284,42 @@ function WhosThatPokemonPage({ onBack, onOpenPokedex, onOpenTcg }) {
                 onClick={resetLeaderboard}
               >
                 Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {pendingLeaveAction && (
+        <div
+          className="clear-dialog-overlay"
+          role="presentation"
+          onClick={cancelLeaveGame}
+        >
+          <div
+            className="clear-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="who-leave-game-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2 id="who-leave-game-title">Leave Game?</h2>
+            <p>Your current Who's That Pokemon round will end if you leave this screen.</p>
+            <div className="clear-dialog-actions">
+              <button
+                type="button"
+                className="nes-btn"
+                onClick={cancelLeaveGame}
+                autoFocus
+              >
+                Stay
+              </button>
+              <button
+                type="button"
+                className="nes-btn is-error"
+                onClick={confirmLeaveGame}
+              >
+                Leave
               </button>
             </div>
           </div>

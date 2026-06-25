@@ -1361,7 +1361,7 @@ button.brand-home-button:focus-visible {
 
 .choice-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -2564,6 +2564,691 @@ button.brand-home-button:focus-visible {
   line-height: 1.45;
 }
 
+.who-page {
+  --who-yellow: #ffcb05;
+  --who-blue: #2a75bb;
+  --who-blue-dark: #163f77;
+  --who-panel: #f4f4f4;
+}
+
+.who-page .app-header {
+  background: linear-gradient(135deg, var(--who-yellow) 0 52%, var(--who-blue) 52% 100%);
+  background-clip: padding-box;
+}
+
+.who-page .brand-mark h1 {
+  color: #ffffff;
+  text-shadow:
+    2px 2px 0 var(--who-blue-dark),
+    -2px 2px 0 var(--who-blue-dark),
+    2px -2px 0 var(--who-blue-dark),
+    -2px -2px 0 var(--who-blue-dark);
+}
+
+.who-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.42fr) minmax(520px, 0.58fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.who-setup-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.34fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.who-setup-panel {
+  display: grid;
+  gap: 16px;
+  border: var(--gb-frame-width) solid transparent;
+  border-image: var(--gb-frame) var(--gb-frame-slice) round;
+  padding: 24px;
+  color: #050505;
+  background:
+    linear-gradient(#fff8d8, #ffffff 260px),
+    #ffffff;
+  box-shadow:
+    8px 8px 0 rgb(0 0 0 / 44%),
+    inset 0 0 0 4px #ffffff;
+  image-rendering: pixelated;
+}
+
+.who-setup-panel h2 {
+  margin: 0;
+  color: #050505;
+  font-size: clamp(1.4rem, 4vw, 2.8rem);
+  line-height: 1.1;
+}
+
+.who-name-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.who-name-row input {
+  margin-bottom: 0;
+}
+
+.who-name-row .nes-btn {
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.who-region-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.who-region-card.nes-btn {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  width: 100%;
+  min-width: 0;
+  min-height: 218px;
+  overflow: hidden;
+  padding: 14px;
+  color: #212529;
+  background-color: #ffffff;
+  text-align: left;
+  white-space: normal;
+}
+
+.who-region-card.nes-btn.is-selected,
+.who-region-card.nes-btn.is-selected:hover:not(:disabled) {
+  color: #ffffff;
+  background-color: var(--who-blue);
+}
+
+.who-region-art {
+  display: flex;
+  gap: clamp(10px, 4.5%, 18px);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 124px;
+  overflow: hidden;
+  border: 4px solid #212529;
+  background: #ffffff;
+}
+
+.who-region-pokemon-preview {
+  display: grid;
+  flex: 0 0 clamp(62px, 26%, 82px);
+  place-items: center;
+  width: clamp(62px, 26%, 82px);
+  height: clamp(62px, 26%, 82px);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.who-region-pokemon-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+.who-region-art .who-random-icon {
+  flex: 0 0 auto;
+  width: 94px;
+  height: 94px;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+.who-region-card > strong,
+.who-region-card > span:not(.who-region-art) {
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.who-region-card > span:not(.who-region-art) {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.who-control-panel,
+.who-game-panel,
+.who-entry-modal {
+  border: var(--gb-frame-width) solid transparent;
+  border-image: var(--gb-frame) var(--gb-frame-slice) round;
+  background: #ffffff;
+  background-clip: padding-box;
+  box-shadow:
+    8px 8px 0 rgb(0 0 0 / 44%),
+    inset 0 0 0 4px #ffffff;
+  image-rendering: pixelated;
+}
+
+.who-control-panel {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  background:
+    linear-gradient(#fff8d8, #ffffff 220px),
+    #ffffff;
+}
+
+.who-control-panel form,
+.who-score-panel,
+.who-leaderboard {
+  display: grid;
+  gap: 14px;
+}
+
+.who-score-panel h2,
+.who-leaderboard h2 {
+  margin: 0;
+  color: #050505;
+}
+
+.who-leaderboard-heading {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.who-leaderboard-heading .nes-btn {
+  min-height: 34px;
+  padding: 4px 8px;
+  font-size: 0.68rem;
+}
+
+.who-score-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.who-score-list div,
+.who-leaderboard-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 12px;
+  border: 4px solid #212529;
+  padding: 10px;
+  color: #050505;
+  background: #ffffff;
+  box-shadow:
+    inset -4px -4px 0 #adafbc,
+    inset 4px 4px 0 #ffffff;
+}
+
+.who-score-list dt {
+  color: #555555;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.who-score-list dd {
+  margin: 0;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.who-leaderboard-list {
+  display: grid;
+  gap: 10px;
+  max-height: 420px;
+  overflow: auto;
+  padding: 2px;
+}
+
+.who-leaderboard-row {
+  grid-template-columns: auto minmax(0, 1fr) minmax(120px, auto) auto;
+  align-items: center;
+  font-size: 0.78rem;
+}
+
+.who-leaderboard-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 900;
+}
+
+.who-game-panel {
+  position: relative;
+  display: grid;
+  min-height: min(720px, calc(100vh - 150px));
+  overflow: hidden;
+  padding: 26px;
+  background: #79b6e8;
+}
+
+.who-game-route {
+  position: relative;
+  display: grid;
+  align-content: start;
+  width: min(1360px, calc(100% - 28px));
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 14px 0;
+  background: #ffffff;
+}
+
+.who-game-header.app-header {
+  margin-bottom: 10px;
+  padding: 12px 16px;
+}
+
+.who-play-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 380px);
+  gap: 18px;
+  align-content: start;
+  align-items: start;
+  justify-self: center;
+  width: min(1320px, 100%);
+  height: auto;
+  min-height: 0;
+}
+
+.who-game-route .who-game-panel {
+  justify-self: center;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  border: var(--gb-frame-width) solid transparent;
+  border-image: var(--gb-frame) var(--gb-frame-slice) round;
+  padding: 0;
+  box-shadow:
+    8px 8px 0 rgb(0 0 0 / 44%),
+    inset 0 0 0 4px #ffffff;
+}
+
+.who-bg-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: center;
+  image-rendering: auto;
+}
+
+.who-empty-state,
+.who-stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  color: #ffffff;
+  text-align: center;
+  text-shadow:
+    2px 2px 0 #050505,
+    -2px 2px 0 #050505,
+    2px -2px 0 #050505,
+    -2px -2px 0 #050505;
+}
+
+.who-empty-state {
+  gap: 14px;
+  align-content: center;
+}
+
+.who-empty-state h2,
+.who-empty-state p {
+  margin: 0;
+  max-width: 34ch;
+}
+
+.who-pokemon-button {
+  position: absolute;
+  left: 13%;
+  top: 27%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: clamp(185px, 20vw, 285px);
+  height: clamp(185px, 30vh, 295px);
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+button.who-pokemon-button:hover:not(:disabled),
+button.who-pokemon-button:active:not(:disabled),
+button.who-pokemon-button:focus-visible:not(:disabled) {
+  background: transparent;
+  box-shadow: none;
+  transform: translate(-50%, -50%) !important;
+}
+
+.who-pokemon-button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.who-pokemon-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: var(--pokemon-art);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transform: none;
+  transform-origin: center;
+  transition: opacity 20ms linear;
+}
+
+.who-pokemon-silhouette {
+  filter:
+    brightness(0);
+  opacity: 1;
+}
+
+.who-pokemon-revealed-art {
+  filter: none;
+  opacity: 0;
+  transform: translate(140px, 115px); /* nudged from 50% 50% to compensate for the shift */
+}
+
+.who-pokemon-preload {
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.who-pokemon-preload img {
+  display: block;
+  width: 1px;
+  height: 1px;
+}
+
+.who-pokemon-button.is-revealed {
+  cursor: pointer;
+}
+
+.who-pokemon-button.is-revealed .who-pokemon-silhouette {
+  opacity: 0;
+}
+
+.who-pokemon-button.is-revealed .who-pokemon-revealed-art {
+  opacity: 1;
+}
+
+.who-guess-panel {
+  position: relative;
+  justify-self: stretch;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  z-index: 3;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  align-items: start;
+  border: 4px solid #212529;
+  padding: 22px;
+  color: #050505;
+  background: #ffffff;
+  box-shadow:
+    6px 6px 0 rgb(0 0 0 / 34%),
+    inset -4px -4px 0 #adafbc,
+    inset 4px 4px 0 #ffffff;
+  transform: none;
+}
+
+.who-guess-panel h2 {
+  margin: 4px 0 0;
+  color: #050505;
+  font-size: clamp(1.2rem, 3vw, 2.2rem);
+  line-height: 1.1;
+}
+
+.who-guess-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.who-guess-row input {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+.who-guess-controls {
+  position: relative;
+}
+
+.who-hint-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  border: 4px solid #212529;
+  padding: 10px;
+  background: #ffffff;
+  box-shadow:
+    6px 6px 0 rgb(0 0 0 / 34%),
+    inset -4px -4px 0 #adafbc,
+    inset 4px 4px 0 #ffffff;
+}
+
+.who-hint-grid .nes-btn {
+  width: 100%;
+  min-height: 36px;
+  padding: 5px 8px;
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.who-result {
+  margin: 10px 0 0;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.who-result.is-correct {
+  color: #247836;
+}
+
+.who-result.is-wrong {
+  color: #ce372b;
+}
+
+.who-menu-button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
+  display: grid;
+  gap: 4px;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  height: 40px;
+  min-height: 40px;
+  border: 4px solid #212529;
+  border-radius: 0;
+  padding: 7px;
+  background-color: #ffffff;
+  box-shadow:
+    4px 4px 0 #212529,
+    inset -4px -4px 0 #adafbc,
+    inset 4px 4px 0 #ffffff;
+  pointer-events: auto;
+}
+
+.who-menu-button:hover:not(:disabled),
+.who-menu-button:active:not(:disabled),
+.who-menu-button:focus-visible {
+  background: #e7e7e7;
+  transform: none;
+  box-shadow:
+    4px 4px 0 #212529,
+    inset -4px -4px 0 #adafbc,
+    inset 4px 4px 0 #ffffff;
+}
+
+.who-menu-button span {
+  display: block;
+  width: 20px;
+  height: 3px;
+  background: #212529;
+}
+
+.who-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  justify-items: end;
+  padding: 22px;
+  background: rgb(0 0 0 / 42%);
+  backdrop-filter: blur(4px);
+}
+
+.who-menu-panel {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 44px);
+  overflow: auto;
+  border: var(--gb-frame-width) solid transparent;
+  border-image: var(--gb-frame) var(--gb-frame-slice) round;
+  padding: 30px;
+  color: #050505;
+  background:
+    linear-gradient(#fff8d8, #ffffff 260px),
+    #ffffff;
+  box-shadow:
+    8px 8px 0 rgb(0 0 0 / 44%),
+    inset 0 0 0 4px #ffffff;
+  image-rendering: pixelated;
+}
+
+.who-menu-panel .modal-close.nes-btn {
+  top: 12px;
+  right: 12px;
+}
+
+.who-menu-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.who-entry-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at center, rgb(255 255 255 / 12%), transparent 42%),
+    rgb(16 16 16 / 88%);
+  backdrop-filter: blur(8px);
+}
+
+.who-entry-modal {
+  position: relative;
+  display: grid;
+  gap: 22px;
+  width: min(1180px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 30px;
+  color: #050505;
+}
+
+.who-entry-main {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.46fr) minmax(360px, 0.54fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.who-entry-main .pokedex-card-media {
+  min-height: 320px;
+}
+
+.who-entry-main h2 {
+  margin: 0 0 14px;
+  color: #050505;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  text-transform: capitalize;
+}
+
+.who-games-section {
+  margin-top: 16px;
+}
+
+.who-game-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 148px;
+  overflow: auto;
+  padding: 2px;
+}
+
+.who-game-list span {
+  border: 3px solid #212529;
+  padding: 6px 8px;
+  color: #050505;
+  background: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.who-featured-section {
+  border-top: 4px solid #212529;
+  padding-top: 18px;
+}
+
+.who-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 18px;
+  max-height: 560px;
+  overflow: auto;
+  padding: 2px;
+}
+
+.who-page .card-detail-overlay {
+  z-index: 60;
+}
+
+.who-page .clear-dialog-overlay {
+  z-index: 90;
+}
+
 .clear-dialog-overlay {
   position: fixed;
   inset: 0;
@@ -2871,12 +3556,24 @@ button.brand-home-button:focus-visible {
 @media (max-width: 900px) {
   .choice-grid,
   .pokedex-layout,
-  .pokedex-card {
+  .pokedex-card,
+  .who-setup-layout,
+  .who-layout,
+  .who-play-shell,
+  .who-entry-main {
     grid-template-columns: 1fr;
   }
 
   .pokedex-card {
     min-height: 0;
+  }
+
+  .app-container .who-game-panel {
+    min-height: 0;
+  }
+
+  .who-entry-main .pokedex-card-media {
+    min-height: 260px;
   }
 }
 
@@ -2955,6 +3652,52 @@ button.brand-home-button:focus-visible {
 
   .pokedex-search-row {
     grid-template-columns: 1fr;
+  }
+
+  .who-name-row {
+    grid-template-columns: 1fr;
+  }
+
+  .who-name-row .nes-btn {
+    width: 100%;
+  }
+
+  .who-pokemon-button {
+    left: 17%;
+    top: 28%;
+    width: clamp(165px, 40vw, 250px);
+    height: clamp(165px, 32vh, 260px);
+  }
+
+  .who-guess-panel {
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .who-guess-row,
+  .who-hint-grid,
+  .who-leaderboard-row {
+    grid-template-columns: 1fr;
+  }
+
+  .who-entry-modal {
+    padding: 24px;
+  }
+
+  .who-region-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .who-region-card.nes-btn {
+    min-height: 164px;
+  }
+
+  .who-leaderboard-heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .pokemon-list {

@@ -1,4 +1,4 @@
-## Pokémon Lab
+## PokéLab
 
 A browser-based Pokémon lab built with React, featuring Pokédex, TCG, team-building, and quiz stations.
 

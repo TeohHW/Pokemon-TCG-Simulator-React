@@ -285,6 +285,45 @@ const normalizePokemonName = (name = '') =>
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 
+const POKEMON_SEARCH_VALIDATION_MESSAGE = 'Please enter a valid Pokemon name or National Dex number.';
+
+const getPokemonLookupValidationError = (pokemonName = '') => {
+  const searchValue = String(pokemonName).trim();
+
+  if (!searchValue) {
+    return POKEMON_SEARCH_VALIDATION_MESSAGE;
+  }
+
+  if (/^-/.test(searchValue)) {
+    return POKEMON_SEARCH_VALIDATION_MESSAGE;
+  }
+
+  if (/^\d+$/.test(searchValue)) {
+    return Number(searchValue) > 0 ? '' : POKEMON_SEARCH_VALIDATION_MESSAGE;
+  }
+
+  return /^[a-z0-9]+(?:[ -]+[a-z0-9]+)*$/i.test(searchValue)
+    ? ''
+    : POKEMON_SEARCH_VALIDATION_MESSAGE;
+};
+
+const matchesPokemonSearch = (pokemon, searchValue = '') => {
+  const normalizedSearch = normalizePokemonName(searchValue);
+  if (!normalizedSearch) {
+    return true;
+  }
+
+  const normalizedPokemonName = normalizePokemonName(pokemon.name);
+  const entryNumber = String(pokemon.entryNumber);
+  const paddedEntryNumber = entryNumber.padStart(3, '0');
+
+  return (
+    normalizedPokemonName.includes(normalizedSearch) ||
+    entryNumber.includes(normalizedSearch) ||
+    paddedEntryNumber.includes(normalizedSearch)
+  );
+};
+
 const getPokemonIdFromUrl = (url = '') => {
   const [, id] = url.match(/\/pokemon-species\/(\d+)\//) || [];
   return id || '';
@@ -333,6 +372,11 @@ const normalizePokemonLookup = (pokemonName = '') =>
     .replace(/^-+|-+$/g, '');
 
 const fetchPokemonByNameOrSpecies = (pokemonName, options = {}) => {
+  const validationError = getPokemonLookupValidationError(pokemonName);
+  if (validationError) {
+    return Promise.reject(new Error(validationError));
+  }
+
   const normalizedName = normalizePokemonLookup(pokemonName);
   if (!normalizedName) {
     return Promise.reject(new Error('Pokemon not found. Try a name or National Dex number.'));
@@ -4693,6 +4737,18 @@ function PokedexPage({ onBack, onOpenTcg, onOpenWhos, onOpenTeam, onOpenQuiz }) 
   );
 
   const searchPokemon = useCallback((pokemonName) => {
+    const validationError = getPokemonLookupValidationError(pokemonName);
+    if (validationError) {
+      setSelectedPokemon(null);
+      setSpeciesDetails(null);
+      setEvolutionTree(null);
+      setTypeWeaknesses([]);
+      setMoveDetails({});
+      setSelectedPokedexDetail(null);
+      setError(validationError);
+      return;
+    }
+
     const normalizedName = normalizePokemonLookup(pokemonName);
     if (!normalizedName) return;
 
@@ -4872,13 +4928,7 @@ function PokedexPage({ onBack, onOpenTcg, onOpenWhos, onOpenTeam, onOpenQuiz }) 
   }, [pokemonList, selectedDex]);
 
   const visiblePokemon = useMemo(() => {
-    const normalizedSearch = searchTerm.trim().toLowerCase();
-    const filteredPokemon = normalizedSearch
-      ? pokemonList.filter((pokemon) => (
-          pokemon.name.includes(normalizedSearch) ||
-          String(pokemon.entryNumber).includes(normalizedSearch)
-        ))
-      : pokemonList;
+    const filteredPokemon = pokemonList.filter((pokemon) => matchesPokemonSearch(pokemon, searchTerm));
 
     const compareByEntry = (firstPokemon, secondPokemon) =>
       firstPokemon.entryNumber - secondPokemon.entryNumber ||

@@ -1,0 +1,86 @@
+[2m11:09:51 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] C:/Users/teohh/VSCode Workspace/React/src/styles.css:2738:67: Unknown word grid-template-columns[39m
+  Plugin: [35mvite:css[39m
+  File: [36mC:/Users/teohh/VSCode Workspace/React/src/styles.css[39m:2738:66
+[33m  2736 |  }
+  2737 |  
+  2738 |  ...ex-page .pokemon-list-item.nes-btn.is-without-number {\r\n  grid-template-columns: 58px minmax(0, 1fr);\r\n}\r\n\r...
+       |                                                                 ^
+  2739 |    width: 58px;
+  2740 |    height: 58px;[39m
+      at Input.error (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\input.js:135:16)
+      at Parser.unknownWord (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parser.js:602:22)
+      at Parser.decl (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parser.js:242:14)
+      at Parser.other (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parser.js:408:18)
+      at Parser.parse (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parser.js:479:16)
+      at parse (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parse.js:11:12)
+      at new LazyResult (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\lazy-result.js:165:16)
+      at Processor.process (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\processor.js:53:14)
+      at runPostCSS (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:21166:66)
+      at async compilePostCSS (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:21150:6)
+[2m11:09:51 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/styles.css. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m11:09:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: [postcss] C:/Users/teohh/VSCode Workspace/React/src/styles.css:2738:67: Unknown word grid-template-columns
+  Plugin: [35mvite:css[39m
+  File: [36mC:/Users/teohh/VSCode Workspace/React/src/styles.css[39m:2738:66
+[33m  2736 |  }
+  2737 |  
+  2738 |  ...ex-page .pokemon-list-item.nes-btn.is-without-number {\r\n  grid-template-columns: 58px minmax(0, 1fr);\r\n}\r\n\r...
+       |                                                                 ^
+  2739 |    width: 58px;
+  2740 |    height: 58px;[39m
+[2m11:09:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: [postcss] C:/Users/teohh/VSCode Workspace/React/src/styles.css:2738:67: Unknown word grid-template-columns
+  Plugin: [35mvite:css[39m
+  File: [36mC:/Users/teohh/VSCode Workspace/React/src/styles.css[39m:2738:66
+[33m  2736 |  }
+  2737 |  
+  2738 |  ...ex-page .pokemon-list-item.nes-btn.is-without-number {\r\n  grid-template-columns: 58px minmax(0, 1fr);\r\n}\r\n\r...
+       |                                                                 ^
+  2739 |    width: 58px;
+  2740 |    height: 58px;[39m
+[2m11:09:52 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] C:/Users/teohh/VSCode Workspace/React/src/styles.css:2738:67: Unknown word grid-template-columns[39m
+  Plugin: [35mvite:css[39m
+  File: [36mC:/Users/teohh/VSCode Workspace/React/src/styles.css[39m:2738:66
+[33m  2736 |  }
+  2737 |  
+  2738 |  ...ex-page .pokemon-list-item.nes-btn.is-without-number {\r\n  grid-template-columns: 58px minmax(0, 1fr);\r\n}\r\n\r...
+       |                                                                 ^
+  2739 |    width: 58px;
+  2740 |    height: 58px;[39m
+      at Input.error (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\input.js:135:16)
+      at Parser.unknownWord (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parser.js:602:22)
+      at Parser.decl (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parser.js:242:14)
+      at Parser.other (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parser.js:408:18)
+      at Parser.parse (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parser.js:479:16)
+      at parse (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\parse.js:11:12)
+      at new LazyResult (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\lazy-result.js:165:16)
+      at Processor.process (C:\Users\teohh\VSCode Workspace\React\node_modules\postcss\lib\processor.js:53:14)
+      at runPostCSS (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:21166:66)
+      at async compilePostCSS (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:21150:6)
+[2m11:23:28 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mInvalid Unicode escape sequence
+      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/App.jsx:5470:35 [38;5;246m][0m
+      [38;5;246m│[0m
+ [38;5;246m5470 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0m[38;5;249mp[0m[38;5;249m [0m[38;5;249mc[0m[38;5;249ml[0m[38;5;249ma[0m[38;5;249ms[0m[38;5;249ms[0m[38;5;249mN[0m[38;5;249ma[0m[38;5;249mm[0m[38;5;249me[0m[38;5;249m=[0m[38;5;249m\[0m"[38;5;249mp[0m[38;5;249mo[0m[38;5;249mk[0m[38;5;249me[0m[38;5;249md[0m[38;5;249me[0m[38;5;249mx[0m[38;5;249m-[0m[38;5;249mg[0m[38;5;249ma[0m[38;5;249mm[0m[38;5;249me[0m[38;5;249m-[0m[38;5;249ms[0m[38;5;249mu[0m[38;5;249mm[0m[38;5;249mm[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249my[0m[38;5;249m\[0m[38;5;249m"[0m[38;5;249m>[0m[38;5;249mS[0m[38;5;249mu[0m[38;5;249mm[0m[38;5;249mm[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249my[0m[38;5;249m:[0m[38;5;249m [0m[38;5;249m{[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249mi[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249mD[0m[38;5;249me[0m[38;5;249mx[0m[38;5;249m.[0m[38;5;249ms[0m[38;5;249mu[0m[38;5;249mm[0m[38;5;249mm[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249my[0m[38;5;249m}[0m[38;5;249m<[0m[38;5;249m/[0m[38;5;249mp[0m[38;5;249m>[0m
+ [38;5;240m     │[0m                                   ┬  
+ [38;5;240m     │[0m                                   ╰── 
+[38;5;246m──────╯[0m
+
+  Plugin: [35mvite:oxc[39m
+  File: [36mC:/Users/teohh/VSCode Workspace/React/src/App.jsx[39m
+[2m11:23:28 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mInvalid Unicode escape sequence
+      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/App.jsx:5470:35 [38;5;246m][0m
+      [38;5;246m│[0m
+ [38;5;246m5470 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0m[38;5;249mp[0m[38;5;249m [0m[38;5;249mc[0m[38;5;249ml[0m[38;5;249ma[0m[38;5;249ms[0m[38;5;249ms[0m[38;5;249mN[0m[38;5;249ma[0m[38;5;249mm[0m[38;5;249me[0m[38;5;249m=[0m[38;5;249m\[0m"[38;5;249mp[0m[38;5;249mo[0m[38;5;249mk[0m[38;5;249me[0m[38;5;249md[0m[38;5;249me[0m[38;5;249mx[0m[38;5;249m-[0m[38;5;249mg[0m[38;5;249ma[0m[38;5;249mm[0m[38;5;249me[0m[38;5;249m-[0m[38;5;249ms[0m[38;5;249mu[0m[38;5;249mm[0m[38;5;249mm[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249my[0m[38;5;249m\[0m[38;5;249m"[0m[38;5;249m>[0m[38;5;249mS[0m[38;5;249mu[0m[38;5;249mm[0m[38;5;249mm[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249my[0m[38;5;249m:[0m[38;5;249m [0m[38;5;249m{[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249mi[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249mD[0m[38;5;249me[0m[38;5;249mx[0m[38;5;249m.[0m[38;5;249ms[0m[38;5;249mu[0m[38;5;249mm[0m[38;5;249mm[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249my[0m[38;5;249m}[0m[38;5;249m<[0m[38;5;249m/[0m[38;5;249mp[0m[38;5;249m>[0m
+ [38;5;240m     │[0m                                   ┬  
+ [38;5;240m     │[0m                                   ╰── 
+[38;5;246m──────╯[0m
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mC:/Users/teohh/VSCode Workspace/React/src/App.jsx[39m
+      at transformWithOxc (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:3344:19)
+      at TransformPluginContext.transform (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:3415:26)
+      at EnvironmentPluginContainer.transform (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:30387:51)
+      at async loadAndTransform (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:24646:26)
+      at async viteTransformMiddleware (file:///C:/Users/teohh/VSCode%20Workspace/React/node_modules/vite/dist/node/chunks/node.js:24440:20)

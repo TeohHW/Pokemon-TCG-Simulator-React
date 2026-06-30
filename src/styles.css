@@ -2526,6 +2526,18 @@ button.brand-home-button:focus-visible {
   object-fit: contain;
 }
 
+.pokedex-game-summary {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 3px solid #212529;
+  color: #050505;
+  font-weight: 900;
+  line-height: 1.45;
+  image-rendering: auto;
+}
+
 .pokedex-preview-bottom {
   display: grid;
   grid-template-columns: minmax(360px, 0.64fr) minmax(260px, 0.36fr);
@@ -2726,6 +2738,26 @@ button.brand-home-button:focus-visible {
 .pokemon-list-item strong {
   overflow-wrap: anywhere;
   text-transform: capitalize;
+}
+
+.pokedex-page .pokemon-list-item.nes-btn {
+  grid-template-columns: auto 58px minmax(0, 1fr);
+  gap: 12px;
+  min-height: 84px;
+  font-size: 0.82rem;
+}
+
+.pokedex-page .pokemon-list-item.nes-btn.is-without-number {
+  grid-template-columns: 58px minmax(0, 1fr);
+}
+
+.pokedex-page .pokemon-list-item img {
+  width: 58px;
+  height: 58px;
+}
+
+.pokedex-page .pokemon-list-item strong {
+  font-size: 0.88rem;
 }
 
 .pokedex-card {

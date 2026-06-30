@@ -67,6 +67,7 @@ const POKEDEX_OPTIONS = [
     art: [fireRedGameArt, leafGreenGameArt],
     releaseDate: '2004',
     director: 'Junichi Masuda',
+    summary: 'You play as a new Trainer from Pallet Town, travel across Kanto, defeat Gym Leaders, disrupt Team Rocket, and challenge the Pokemon League while completing the Pokedex.',
     platforms: [{ name: 'Game Boy Advance', icon: platformGameBoyAdvance }],
     starters: [1, 4, 7],
   },
@@ -77,6 +78,7 @@ const POKEDEX_OPTIONS = [
     art: [rubyGameArt, sapphireGameArt, emeraldGameArt],
     releaseDate: '2002-2004',
     director: 'Junichi Masuda / Shigeki Morimoto',
+    summary: 'You play as a young Trainer newly moved to Hoenn, pursue Gym Badges, and become caught between Team Magma and Team Aqua as ancient Pokemon threaten the region\'s balance.',
     platforms: [{ name: 'Game Boy Advance', icon: platformGameBoyAdvance }],
     starters: [252, 255, 258],
   },
@@ -87,6 +89,7 @@ const POKEDEX_OPTIONS = [
     art: [heartGoldGameArt, soulSilverGameArt],
     releaseDate: '2009',
     director: 'Shigeki Morimoto',
+    summary: 'You play as a Johto Trainer, investigate Team Rocket\'s return, earn Gym Badges across Johto, then travel through Kanto before confronting Red at Mt. Silver.',
     platforms: [{ name: 'Nintendo DS', icon: platformDs }],
     starters: [152, 155, 158],
   },
@@ -97,6 +100,7 @@ const POKEDEX_OPTIONS = [
     art: [diamondGameArt, pearlGameArt, platinumGameArt],
     releaseDate: '2006-2008',
     director: 'Junichi Masuda / Takeshi Kawachimaru',
+    summary: 'You play as a Sinnoh Trainer pursuing the Pokemon League while Team Galactic attempts to reshape reality through legendary Pokemon, culminating at Spear Pillar and the Distortion World.',
     platforms: [{ name: 'Nintendo DS', icon: platformDs }],
     starters: [387, 390, 393],
   },
@@ -107,6 +111,7 @@ const POKEDEX_OPTIONS = [
     art: [blackGameArt, whiteGameArt],
     releaseDate: '2012',
     director: 'Takao Unno',
+    summary: 'You first follow Unova\'s conflict with N and Team Plasma over whether Pokemon should be separated from people; two years later, you play as a new Trainer facing a revived Team Plasma and Kyurem\'s threat to freeze Unova.',
     platforms: [{ name: 'Nintendo DS', icon: platformDs }],
     starters: [495, 498, 501],
   },
@@ -117,6 +122,7 @@ const POKEDEX_OPTIONS = [
     art: [xGameArt, yGameArt],
     releaseDate: '2013',
     director: 'Junichi Masuda',
+    summary: 'You play as a Kalos Trainer journeying with friends, battle Team Flare, and stop Lysandre from using the ultimate weapon powered by legendary Pokemon.',
     platforms: [{ name: 'Nintendo 3DS', icon: platform3ds }],
     starters: [650, 653, 656],
   },
@@ -127,6 +133,7 @@ const POKEDEX_OPTIONS = [
     art: [omegaRubyGameArt, alphaSapphireGameArt],
     releaseDate: '2014',
     director: 'Shigeru Ohmori',
+    summary: 'You play as a new Hoenn Trainer, pursue the League, stop Team Magma or Team Aqua from awakening ancient Pokemon, then face the Delta Episode\'s meteor crisis.',
     platforms: [{ name: 'Nintendo 3DS', icon: platform3ds }],
     starters: [252, 255, 258],
   },
@@ -137,6 +144,7 @@ const POKEDEX_OPTIONS = [
     art: [sunGameArt, moonGameArt],
     releaseDate: '2016',
     director: 'Shigeru Ohmori',
+    summary: 'You play as a young Trainer taking Alola\'s island challenge, confront Team Skull and the Aether Foundation, and uncover the mystery of Ultra Beasts and Nebby.',
     platforms: [{ name: 'Nintendo 3DS', icon: platform3ds }],
     starters: [722, 725, 728],
   },
@@ -147,6 +155,7 @@ const POKEDEX_OPTIONS = [
     art: [swordGameArt, shieldGameArt],
     releaseDate: '2019',
     director: 'Shigeru Ohmori',
+    summary: 'You play as a Galar Gym Challenger competing in stadium battles while uncovering Chairman Rose\'s energy crisis and the legend of Zacian, Zamazenta, and Eternatus.',
     platforms: [{ name: 'Nintendo Switch', icon: platformSwitch }],
     starters: [810, 813, 816],
   },
@@ -157,6 +166,7 @@ const POKEDEX_OPTIONS = [
     art: [scarletGameArt, violetGameArt],
     releaseDate: '2022',
     director: 'Shigeru Ohmori',
+    summary: 'You play as a Paldea academy student on a treasure hunt across three paths, facing Gym Leaders, Team Star, Titan Pokemon, and the mystery of Area Zero.',
     platforms: [{ name: 'Nintendo Switch', icon: platformSwitch }],
     starters: [906, 909, 912],
   },
@@ -5158,10 +5168,14 @@ function PokedexPage({ onBack, onOpenTcg, onOpenWhos, onOpenTeam, onOpenQuiz }) 
               <button
                 key={pokemon.name}
                 type="button"
-                className="pokemon-list-item nes-btn"
+                className={`pokemon-list-item nes-btn ${
+                  selectedDex === ALL_POKEDEX_OPTION.id ? '' : 'is-without-number'
+                }`}
                 onClick={() => searchPokemon(pokemon.name)}
               >
-                <span>#{String(pokemon.entryNumber).padStart(3, '0')}</span>
+                {selectedDex === ALL_POKEDEX_OPTION.id && (
+                  <span>#{String(pokemon.entryNumber).padStart(3, '0')}</span>
+                )}
                 <img
                   src={getPokemonSpriteUrl(pokemon.pokemonId)}
                   alt=""
@@ -5451,6 +5465,9 @@ function PokedexPage({ onBack, onOpenTcg, onOpenWhos, onOpenTeam, onOpenQuiz }) 
                         <img key={artSrc} src={artSrc} alt="" loading="lazy" />
                       ))}
                     </div>
+                  )}
+                  {activeDex.summary && (
+                    <p className="pokedex-game-summary">Summary: {activeDex.summary}</p>
                   )}
                 </aside>
               )}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import './styles.css';
 import bugTypeIcon from '../pokedex/types/bug.png';
 import darkTypeIcon from '../pokedex/types/dark.png';
@@ -1279,6 +1279,13 @@ const cardMatchesSearch = (card, searchValue = '') => {
 
   if (!normalizedSearch) return true;
 
+  if (card.searchText || card.compactSearchText) {
+    return (
+      card.searchText?.includes(normalizedSearch) ||
+      card.compactSearchText?.includes(compactSearch)
+    );
+  }
+
   const searchableFields = [
     card.name,
     card.evolvesFrom,
@@ -1297,11 +1304,27 @@ const cardMatchesSearch = (card, searchValue = '') => {
   });
 };
 
+const createCardSearchIndex = (card) => {
+  const searchableText = [
+    card.name,
+    card.evolvesFrom,
+    ...(card.types || []),
+    ...(card.subtypes || []),
+  ].join(' ');
+
+  return {
+    searchText: normalizeSearchText(searchableText),
+    compactSearchText: compactSearchText(searchableText),
+  };
+};
+
 const expansionHasCardMatch = (expansion, searchValue = '') => {
   if (!normalizeSearchText(searchValue)) return true;
 
-  return [...(expansion?.commons || []), ...(expansion?.uncommons || []), ...(expansion?.rares || [])]
-    .some((card) => cardMatchesSearch(card, searchValue));
+  const searchableCards = expansion?.allCards ||
+    [...(expansion?.commons || []), ...(expansion?.uncommons || []), ...(expansion?.rares || [])];
+
+  return searchableCards.some((card) => cardMatchesSearch(card, searchValue));
 };
 
 const parseReleaseDate = (releaseDate = '') => {
@@ -1439,6 +1462,7 @@ function TcgSimulator({ onBack, onOpenPokedex, onOpenWhos, onOpenTeam, onOpenQui
   const [selectedSet, setSelectedSet] = useState('base1');
   const [selectedSeries, setSelectedSeries] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const deferredSearchTerm = useDeferredValue(searchTerm);
   const [binderSearchTerm, setBinderSearchTerm] = useState('');
   const [sortMode, setSortMode] = useState('release-oldest');
   const [currentPack, setCurrentPack] = useState([]);
@@ -1671,6 +1695,35 @@ function TcgSimulator({ onBack, onOpenPokedex, onOpenWhos, onOpenTeam, onOpenQui
       hasPlayableCards(expansion) && parseReleaseDate(expansion.releaseDate) <= today.getTime(),
     );
   }, [expansionEntries]);
+  const indexedReleasedPlayableExpansionEntries = useMemo(
+    () =>
+      releasedPlayableExpansionEntries.map(([setId, expansion]) => {
+        const allCards = [
+          ...(expansion.commons || []),
+          ...(expansion.uncommons || []),
+          ...(expansion.rares || []),
+        ].map((card) => ({
+          ...card,
+          ...createCardSearchIndex(card),
+        }));
+        const expansionSearchText = normalizeSearchText([
+          expansion.setName,
+          expansion.series,
+          expansion.releaseYear,
+        ].join(' '));
+
+        return [
+          setId,
+          {
+            ...expansion,
+            allCards,
+            searchText: expansionSearchText,
+            compactSearchText: expansionSearchText.replace(/\s+/g, ''),
+          },
+        ];
+      }),
+    [releasedPlayableExpansionEntries],
+  );
   const latestReleasedExpansion = useMemo(
     () =>
       [...releasedPlayableExpansionEntries]
@@ -1688,7 +1741,10 @@ function TcgSimulator({ onBack, onOpenPokedex, onOpenWhos, onOpenTeam, onOpenQui
     const uniqueCards = new Map();
     [...activeSet.commons, ...activeSet.uncommons, ...activeSet.rares].forEach((card) => {
       if (!uniqueCards.has(card.id)) {
-        uniqueCards.set(card.id, card);
+        uniqueCards.set(card.id, {
+          ...card,
+          ...createCardSearchIndex(card),
+        });
       }
     });
 
@@ -1701,11 +1757,11 @@ function TcgSimulator({ onBack, onOpenPokedex, onOpenWhos, onOpenTeam, onOpenQui
     return activeSetCards.filter((card) => cardMatchesSearch(card, binderSearchTerm));
   }, [activeSetCards, binderSearchTerm]);
   const allSetSearchCards = useMemo(() => {
-    if (!normalizeSearchText(searchTerm)) return [];
+    if (compactSearchText(deferredSearchTerm).length < 2) return [];
 
-    return releasedPlayableExpansionEntries.flatMap(([setId, expansion]) =>
-      [...(expansion.commons || []), ...(expansion.uncommons || []), ...(expansion.rares || [])]
-        .filter((card) => cardMatchesSearch(card, searchTerm))
+    return indexedReleasedPlayableExpansionEntries.flatMap(([setId, expansion]) =>
+      expansion.allCards
+        .filter((card) => cardMatchesSearch(card, deferredSearchTerm))
         .map((card) => ({
           ...card,
           setId,
@@ -1714,7 +1770,7 @@ function TcgSimulator({ onBack, onOpenPokedex, onOpenWhos, onOpenTeam, onOpenQui
           isOwnedInBinder: Boolean(collection[card.id]),
         })),
     );
-  }, [collection, releasedPlayableExpansionEntries, searchTerm]);
+  }, [collection, deferredSearchTerm, indexedReleasedPlayableExpansionEntries]);
   const binderProgress = activeSetCards.length
     ? Math.round((ownedActiveSetCards.length / activeSetCards.length) * 100)
     : 0;
@@ -1748,27 +1804,29 @@ function TcgSimulator({ onBack, onOpenPokedex, onOpenWhos, onOpenTeam, onOpenQui
   const seriesOptions = useMemo(() => {
     const options = [
       'All',
-      ...new Set(releasedPlayableExpansionEntries.map(([, expansion]) => expansion.series || 'Unknown')),
+      ...new Set(indexedReleasedPlayableExpansionEntries.map(([, expansion]) => expansion.series || 'Unknown')),
     ];
     return options.sort((a, b) => {
       if (a === 'All') return -1;
       if (b === 'All') return 1;
       return a.localeCompare(b);
     });
-  }, [releasedPlayableExpansionEntries]);
+  }, [indexedReleasedPlayableExpansionEntries]);
 
   const visibleExpansions = useMemo(
     () =>
-      releasedPlayableExpansionEntries
+      indexedReleasedPlayableExpansionEntries
         .filter(([, expansion]) => {
           const matchesSeries =
             selectedSeries === 'All' || expansion.series === selectedSeries;
-          const normalizedSearch = normalizeSearchText(searchTerm);
+          const normalizedSearch = normalizeSearchText(deferredSearchTerm);
+          const compactSearch = compactSearchText(deferredSearchTerm);
+          const canSearchCards = compactSearch.length >= 2;
           const matchesSearch =
             !normalizedSearch ||
-            normalizeSearchText(expansion.setName).includes(normalizedSearch) ||
-            compactSearchText(expansion.setName).includes(compactSearchText(searchTerm)) ||
-            expansionHasCardMatch(expansion, searchTerm);
+            expansion.searchText.includes(normalizedSearch) ||
+            expansion.compactSearchText.includes(compactSearch) ||
+            (canSearchCards && expansionHasCardMatch(expansion, deferredSearchTerm));
 
           return matchesSeries && matchesSearch;
         })
@@ -1782,13 +1840,14 @@ function TcgSimulator({ onBack, onOpenPokedex, onOpenWhos, onOpenTeam, onOpenQui
           const dateSort = firstDate.localeCompare(secondDate);
           return sortMode === 'release-newest' ? dateSort * -1 : dateSort;
         }),
-    [releasedPlayableExpansionEntries, selectedSeries, searchTerm, sortMode],
+    [deferredSearchTerm, indexedReleasedPlayableExpansionEntries, selectedSeries, sortMode],
   );
 
   const chooseSet = (setId) => {
     const nextSet = allExpansions?.[setId];
+    const canSearchCards = compactSearchText(searchTerm).length >= 2;
     const hasTopPokemonSearch =
-      normalizeSearchText(searchTerm) && expansionHasCardMatch(nextSet, searchTerm);
+      canSearchCards && expansionHasCardMatch(nextSet, searchTerm);
 
     clearRevealTimers();
     setSelectedSet(setId);
@@ -1959,7 +2018,7 @@ function TcgSimulator({ onBack, onOpenPokedex, onOpenWhos, onOpenTeam, onOpenQui
             <div>
               <h2>All Sets</h2>
               <p>
-                {allSetSearchCards.length} card{allSetSearchCards.length === 1 ? '' : 's'} found for {searchTerm}
+                {allSetSearchCards.length} card{allSetSearchCards.length === 1 ? '' : 's'} found for {deferredSearchTerm}
               </p>
             </div>
           </div>

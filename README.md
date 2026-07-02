@@ -16,6 +16,12 @@ A browser-based Pokémon lab built with React, featuring Pokédex, TCG, team-bui
 - Featured TCG cards linked from selected Pokémon entries.
 - Retro-inspired NES/Game Boy visual style with responsive layouts.
 
+## Data and API Caching
+
+- PokeAPI JSON resources are cached locally with IndexedDB, with an in-memory fallback for the current session.
+- Repeated Pokemon, Pokedex, type, move, species, evolution, and ability requests reuse cached data when available.
+- Local app progress such as the TCG collection and Who's That Pokemon leaderboard remains saved in browser storage.
+
 ## About
 
 Personal project, not intended for commercial use — just something I wanted to build to study React. AI coding tools such as Codex were used during development.
